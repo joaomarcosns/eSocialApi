@@ -39,7 +39,7 @@ class RegisterTest extends TestCase
     }
     /**
      * @test
-    */
+     */
     public function name_should_have_a_max_of_255_characterisers()
     {
         $user = $this->makeUser();
@@ -55,6 +55,26 @@ class RegisterTest extends TestCase
         $return->assertStatus(302);
         $return->assertSessionHasErrors([
             'name' => 'O Nome de usuário apenas pode ter max characters'
+        ]);
+    }
+    /**
+     * @test
+     */
+    public function name_should_be_string()
+    {
+        $user = $this->makeUser();
+        $user['name'] = 123;
+        $return =  $this->post(route('auth.register'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'password' => $user['password'],
+
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'name' => 'Não pode conter números nesse campo'
         ]);
     }
 }
