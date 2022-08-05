@@ -25,7 +25,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'max:255', 'min:3', 'string'],
-            'email' => ['required'],
+            'email' => ['required', 'email'],
         ];
     }
 
@@ -37,6 +37,7 @@ class UserRequest extends FormRequest
             'name.string' => 'Não pode conter números nesse campo',
             'name.min' => 'O Nome de usuário tem ser maior que :min characters',
             'email.required' => 'O campo de e-mail é obrigatório',
+            'email.email' => 'O campo de e-mail deve ser do tipo e-mail',
 
         ];
     }
