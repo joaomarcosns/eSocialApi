@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Carbon\Carbon;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         $credentials = request(['email', 'password']);
         if (!Auth::attempt($credentials))
