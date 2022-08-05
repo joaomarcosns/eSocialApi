@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -24,7 +25,7 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
         try {
             $user = User::query()->create([
@@ -41,7 +42,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'internal error',
-                'data' => [],
+                'data' => $e->getMessage(),
                 'status_code' => 500
             ], 500);
         }
