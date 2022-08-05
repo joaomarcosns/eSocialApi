@@ -8,7 +8,8 @@ use Tests\TestCase;
 
 class RegisterTest extends TestCase
 {
-    public function makeUser() {
+    public function makeUser()
+    {
         return [
             'name' => 'Test User',
             'email' => 'test@test.com',
@@ -20,8 +21,8 @@ class RegisterTest extends TestCase
     /**
      * @test
      */
-
-     public function name_should_be_required() {
+    public function name_should_be_required()
+    {
         $user = $this->makeUser();
         $user['name'] = '';
         $return =  $this->post(route('auth.register'), [
@@ -35,5 +36,25 @@ class RegisterTest extends TestCase
         $return->assertSessionHasErrors([
             'name' => 'O Nome de usuário é obrigatório'
         ]);
-     }
+    }
+    /**
+     * @test
+    */
+    public function name_should_have_a_max_of_255_characterisers()
+    {
+        $user = $this->makeUser();
+        $user['name'] = str_repeat('a', 256);
+        $return =  $this->post(route('auth.register'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'password' => $user['password'],
+
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'name' => 'O Nome de usuário apenas pode ter max characters'
+        ]);
+    }
 }
