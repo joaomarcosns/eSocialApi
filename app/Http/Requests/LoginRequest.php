@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required'],
+            'email' => ['required', 'email'],
         ];
     }
 
@@ -32,6 +32,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'email.required' => 'O campo de e-mail é obrigatório',
+            'email.email' => 'O campo de e-mail deve ser do tipo e-mail',
         ];
     }
 }
