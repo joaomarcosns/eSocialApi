@@ -1,0 +1,38 @@
+<?php
+
+namespace Tests\Feature;
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
+
+class LoginTest extends TestCase
+{
+    public function makeUser()
+    {
+        return [
+            'email' => 'test@test.com',
+            'password' => bcrypt('secret'),
+        ];
+    }
+    /**
+     * @test
+     */
+    public function email_should_be_required()
+    {
+        $user = $this->makeUser();
+        $user['email'] = '';
+        $return =  $this->post(route('auth.login'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'email' => $user['email'],
+            'password' => $user['password'],
+
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'email' => 'O campo de e-mail é obrigatório'
+        ]);
+    }
+
+}
