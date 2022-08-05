@@ -183,4 +183,27 @@ class RegisterTest extends TestCase
             'email' => 'A confirmação do e-mail não corresponde.'
         ]);
     }
+    /**
+     * @test
+     */
+    public function password_should_be_required()
+    {
+        $user = $this->makeUser();
+        $user['email'] = 'teste@any.com';
+        $user['email_confirmation'] = 'teste@any.com';
+        $user['password'] = '';
+        $return =  $this->post(route('auth.register'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'email_confirmation' => $user['email_confirmation'],
+            'password' => $user['password'],
+
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'password' => 'O campo senha é obrigatório'
+        ]);
+    }
 }
