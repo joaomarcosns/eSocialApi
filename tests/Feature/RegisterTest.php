@@ -16,7 +16,7 @@ class RegisterTest extends TestCase
             'email' => 'test@test.com',
             'email_confirmation' => 'test@test.com',
             'password' => bcrypt('secret'),
-            'password_confirm' => bcrypt('secret'),
+            'password_confirmation' => bcrypt('secret'),
         ];
     }
     /**
@@ -204,6 +204,29 @@ class RegisterTest extends TestCase
         $return->assertStatus(302);
         $return->assertSessionHasErrors([
             'password' => 'O campo senha é obrigatório'
+        ]);
+    }
+    /**
+     * @test
+     */
+    public function password_should_be_confirmed()
+    {
+        $user = $this->makeUser();
+        $user['email'] = 'teste@any.com';
+        $user['email_confirmation'] = 'teste@any.com';
+        $user['password_confirmation'] = bcrypt('teste');
+        $return =  $this->post(route('auth.register'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'email_confirmation' => $user['email_confirmation'],
+            'password' => $user['password'],
+
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'password' => 'A confirmação da senha não corresponde.'
         ]);
     }
 }
