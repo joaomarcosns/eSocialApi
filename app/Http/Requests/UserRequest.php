@@ -26,7 +26,7 @@ class UserRequest extends FormRequest
         return [
             'name' => ['required', 'max:255', 'min:3', 'string'],
             'email' => ['required', 'email', 'unique:users', 'confirmed'],
-            'password' => ['required']
+            'password' => ['required', 'confirmed']
         ];
     }
 
@@ -42,6 +42,7 @@ class UserRequest extends FormRequest
             'email.unique' => 'Essa conta já existe',
             'email.confirmed' => 'A confirmação do e-mail não corresponde.',
             'password.required' => 'O campo senha é obrigatório',
+            'password.confirmed' => 'A confirmação da senha não corresponde.',
         ];
     }
 }
