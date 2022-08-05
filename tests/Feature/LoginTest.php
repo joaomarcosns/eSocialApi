@@ -35,4 +35,24 @@ class LoginTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     */
+    public function email_should_be_valid_email()
+    {
+        $user = $this->makeUser();
+        $user['email'] = 'any';
+        $return =  $this->post(route('auth.login'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'email' => $user['email'],
+            'password' => $user['password'],
+
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'email' => 'O campo de e-mail deve ser do tipo e-mail'
+        ]);
+    }
+
 }
