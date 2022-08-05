@@ -17,7 +17,8 @@ class CreateDomainsTable extends Migration
             $table->id();
             $table->string('name', 255)->unique();
             $table->string('tld', 15);
-            $table->timestamps();
+            $table->date('created_at');
+            $table->date('updated_at');
         });
     }
 

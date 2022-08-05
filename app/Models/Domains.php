@@ -14,6 +14,8 @@ class Domains extends Model
     protected $fillable = [
         'name',
         'tld',
+        'created_at',
+        'updated_at'
     ];
-    public $timestamps = true;
+    public $timestamps = false;
 }
