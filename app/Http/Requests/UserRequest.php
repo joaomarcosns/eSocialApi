@@ -25,7 +25,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'max:255', 'min:3', 'string'],
-            'email' => ['required', 'email', 'unique:users'],
+            'email' => ['required', 'email', 'unique:users', 'confirmed'],
         ];
     }
 
@@ -39,7 +39,7 @@ class UserRequest extends FormRequest
             'email.required' => 'O campo de e-mail é obrigatório',
             'email.email' => 'O campo de e-mail deve ser do tipo e-mail',
             'email.unique' => 'Essa conta já existe',
-
+            'email.confirmed' => 'A confirmação do e-mail não corresponde.'
         ];
     }
 }
