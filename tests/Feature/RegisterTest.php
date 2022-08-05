@@ -58,7 +58,7 @@ class RegisterTest extends TestCase
             'name' => 'O Nome de usuário apenas pode ter 255 characters'
         ]);
     }
-    
+
     /**
      * @test
      */
@@ -204,6 +204,28 @@ class RegisterTest extends TestCase
         $return->assertStatus(302);
         $return->assertSessionHasErrors([
             'password' => 'O campo senha é obrigatório'
+        ]);
+    }
+    /**
+     * @test
+     */
+    public function password_should_have_a_min_of_6_characterisers()
+    {
+        $user = $this->makeUser();
+        $user['email'] = 'teste@any.com';
+        $user['email_confirmation'] = 'teste@any.com';
+        $user['password'] = 123;
+        $return =  $this->post(route('auth.register'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'password' => $user['password'],
+
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'password' => 'A confirmação da senha não corresponde.'
         ]);
     }
     /**
