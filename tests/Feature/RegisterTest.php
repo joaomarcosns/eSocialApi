@@ -14,7 +14,7 @@ class RegisterTest extends TestCase
         return [
             'name' => 'Test User',
             'email' => 'test@test.com',
-            'email_confirm' => 'test@test.com',
+            'email_confirmation' => 'test@test.com',
             'password' => bcrypt('secret'),
             'password_confirm' => bcrypt('secret'),
         ];
@@ -160,7 +160,27 @@ class RegisterTest extends TestCase
         $return->assertSessionHasErrors([
             'email' => 'Essa conta já existe'
         ]);
+    }
+    /**
+     * @test
+     */
+    public function email_should_be_confirmed()
+    {
+        $user = $this->makeUser();
+        $user['email'] = 'teste@any.com';
+        $user['email_confirmation'] = 'any@any.com';
+        $return =  $this->post(route('auth.register'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'email_confirmation' => $user['email_confirmation'],
+            'password' => $user['password'],
 
-
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'email' => 'A confirmação do e-mail não corresponde.'
+        ]);
     }
 }
