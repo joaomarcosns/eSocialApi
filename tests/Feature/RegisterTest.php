@@ -119,4 +119,25 @@ class RegisterTest extends TestCase
             'email' => 'O campo de e-mail é obrigatório'
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function email_should_be_valid_email()
+    {
+        $user = $this->makeUser();
+        $user['email'] = 'any';
+        $return =  $this->post(route('auth.register'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'password' => $user['password'],
+
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'email' => 'O campo de e-mail deve ser do tipo e-mail'
+        ]);
+    }
 }
