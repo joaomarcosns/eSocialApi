@@ -24,7 +24,7 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'max:255'],
+            'name' => ['required', 'max:255', 'string'],
         ];
     }
 
@@ -32,7 +32,9 @@ class UserRequest extends FormRequest
     {
         return [
             'name.required' => 'O Nome de usuário é obrigatório',
-            'name.max' => 'O Nome de usuário apenas pode ter max characters'
+            'name.max' => 'O Nome de usuário apenas pode ter max characters',
+            'name.string' => 'Não pode conter números nesse campo',
+
         ];
     }
 }
