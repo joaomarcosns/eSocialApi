@@ -16,7 +16,13 @@ class Domains extends Model
         'tld',
         'created_at',
         'updated_at',
-        'expiration_date'
+        'expiration_date',
+        'fk_registers_id'
     ];
     public $timestamps = false;
+
+    public function registers()
+    {
+        return $this->belongsTo(Registers::class, 'fk_registers_id', 'id');
+    }
 }

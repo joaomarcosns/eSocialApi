@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRegistersDomainsTable extends Migration
+class AddFkRegistersIdToDomainsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,9 @@ class CreateRegistersDomainsTable extends Migration
      */
     public function up()
     {
-        Schema::create('registers_domains', function (Blueprint $table) {
-            $table->id();
+        Schema::table('domains', function (Blueprint $table) {
             $table->unsignedBigInteger('fk_registers_id');
-            $table->unsignedBigInteger('fk_domains_id');
-            $table->timestamps();
-
             $table->foreign('fk_registers_id')->references('id')->on('registers');
-            $table->foreign('fk_domains_id')->references('id')->on('domains');
         });
     }
 
@@ -31,6 +26,8 @@ class CreateRegistersDomainsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('registers_domains');
+        Schema::table('domains', function (Blueprint $table) {
+            $table->dropColumn('fk_registers_id');
+        });
     }
 }
