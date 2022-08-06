@@ -3,7 +3,16 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ImportExcel;
+use App\Models\Domains;
+use App\Models\NameServer;
+use App\Models\Registers;
+use App\Models\RegistersDomains;
+use App\Models\RegistersNameServer;
+use DateTime;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class DomainsController extends Controller
 {
@@ -60,5 +69,78 @@ class DomainsController extends Controller
     public function destroy($id)
     {
         //
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function upload(Request  $request)
+    {
+        $arrays = Excel::toArray(new ImportExcel, request()->file('file'));
+        foreach ($arrays as $date) {
+            foreach ($date as $key => $value) {
+                $domainExplode =  explode('.', $value['domain'], 2);
+                $domain  = $domainExplode[0];
+                $tld = $domainExplode[1];
+                $created = $value['registration_date'];
+                $updated = $value['last_update'];
+                $responsible = $value['responsible'];
+
+                if (empty($value['serve_names'])){
+                    $serveNames = null;
+                }else{
+                    $serveNames = $value['serve_names'];
+                }
+                
+                if (is_int($created) == 1) {
+                    $created = new DateTime("1899-12-30 + $created days");
+                    $created = $created->format("Y-m-d");
+                }
+                $this->storeUpload($domain, $tld, $created, $updated, $responsible, $serveNames);
+            }
+        }
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  String $domain
+     * @param  String $tld
+     * @param  Date $created
+     * @param  Date $updated
+     * @param  String $responsible
+     * @param  String $serveNames
+     */
+    protected function storeUpload($domain, $tld, $created, $updated, $responsible, $serveNames)
+    {
+        $domains = Domains::firstOrCreate([
+            'name' => $domain,
+            'tld' => $tld,
+            'created_at' => $created,
+            'updated_at' => $updated,
+            'expiration_date' => new DateTime("$updated + 365 days")
+        ]);
+
+        $responsible = Registers::firstOrCreate([
+            'name' => $responsible,
+        ]);
+
+        RegistersDomains::firstOrCreate([
+            'fk_registers_id' => $responsible->id,
+            'fk_domains_id' => $domains->id
+        ]);
+
+        if(!empty($serveNames)) {
+            $nameserver = NameServer::firstOrCreate([
+                'name' => $serveNames
+            ]);
+
+            RegistersNameServer::firstOrCreate([
+                'fk_names_server_id' => $nameserver->id,
+                'fk_domains_id' => $domains->id
+            ]);
+        }
+
     }
 }
