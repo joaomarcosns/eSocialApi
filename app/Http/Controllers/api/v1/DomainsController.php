@@ -8,8 +8,6 @@ use App\Imports\ImportExcel;
 use App\Models\Domains;
 use App\Models\NameServer;
 use App\Models\Registers;
-use App\Models\RegistersDomains;
-use App\Models\RegistersNameServer;
 use DateTime;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -23,7 +21,7 @@ class DomainsController extends Controller
      */
     public function index()
     {
-        //
+        return Domains::with('registers')->get();
     }
 
     /**
@@ -114,31 +112,22 @@ class DomainsController extends Controller
      */
     protected function storeUpload($domain, $tld, $created, $updated, $responsible, $serveNames)
     {
+        $registers = Registers::firstOrCreate([
+            'name' => $responsible,
+        ]);
+
         $domains = Domains::firstOrCreate([
             'name' => $domain,
             'tld' => $tld,
             'created_at' => $created,
             'updated_at' => $updated,
-            'expiration_date' => new DateTime("$updated + 365 days")
-        ]);
-
-        $responsible = Registers::firstOrCreate([
-            'name' => $responsible,
-        ]);
-
-        RegistersDomains::firstOrCreate([
-            'fk_registers_id' => $responsible->id,
-            'fk_domains_id' => $domains->id
+            'expiration_date' => new DateTime("$updated + 365 days"),
+            'fk_registers_id' => $registers->id
         ]);
 
         if(!empty($serveNames)) {
             $nameserver = NameServer::firstOrCreate([
                 'name' => $serveNames
-            ]);
-
-            RegistersNameServer::firstOrCreate([
-                'fk_names_server_id' => $nameserver->id,
-                'fk_domains_id' => $domains->id
             ]);
         }
 

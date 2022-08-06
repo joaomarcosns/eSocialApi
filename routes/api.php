@@ -22,5 +22,6 @@ Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(f
 });
 
 Route::controller(DomainsController::class)->name('domains.')->prefix('domains')->group(function () {
+    Route::get('/', 'index')->name('index');
     Route::post('/upload', 'upload')->name('upload');
 });
