@@ -15,5 +15,4 @@ class Registers extends Model
         'name',
     ];
     public $timestamps = true;
-
 }

@@ -25,4 +25,9 @@ class Domains extends Model
     {
         return $this->belongsTo(Registers::class, 'fk_registers_id', 'id');
     }
+
+    public function names_servers()
+    {
+        return $this->hasMany(NameServer::class, 'fk_domains_id', 'id');
+    }
 }

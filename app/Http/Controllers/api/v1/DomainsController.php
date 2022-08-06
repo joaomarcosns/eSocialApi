@@ -8,7 +8,6 @@ use App\Imports\ImportExcel;
 use App\Models\Domains;
 use App\Models\NameServer;
 use App\Models\Registers;
-use DateTime;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
@@ -21,7 +20,11 @@ class DomainsController extends Controller
      */
     public function index()
     {
-        return Domains::with('registers')->get();
+        return response()->json([
+            'message' => "listagem dos domínios",
+            'data' => Domains::with(['registers', 'names_servers'])->get(),
+            'status_code' => 200
+        ], 200);
     }
 
     /**
@@ -93,7 +96,7 @@ class DomainsController extends Controller
                 }
                 
                 if (is_int($created) == 1) {
-                    $created = new DateTime("1899-12-30 + $created days");
+                    $created = new \DateTime("1899-12-30 + $created days");
                     $created = $created->format("Y-m-d");
                 }
                 $this->storeUpload($domain, $tld, $created, $updated, $responsible, $serveNames);
@@ -115,21 +118,22 @@ class DomainsController extends Controller
         $registers = Registers::firstOrCreate([
             'name' => $responsible,
         ]);
-
+        
         $domains = Domains::firstOrCreate([
             'name' => $domain,
             'tld' => $tld,
             'created_at' => $created,
             'updated_at' => $updated,
-            'expiration_date' => new DateTime("$updated + 365 days"),
+            'expiration_date' => new \DateTime("$updated + 365 days"),
             'fk_registers_id' => $registers->id
         ]);
+        if (empty($serveNames)) $serveNames = $domain.'.'.$tld;
 
-        if(!empty($serveNames)) {
-            $nameserver = NameServer::firstOrCreate([
-                'name' => $serveNames
-            ]);
-        }
+        NameServer::firstOrCreate([
+            'names_server'  => $serveNames,
+            'fk_domains_id' => $domains->id
+        ]);
+
 
     }
 }

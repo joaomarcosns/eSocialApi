@@ -12,6 +12,7 @@ class NameServer extends Model
     protected $id = 'id';
     protected $fillable = [
         'names_server',
+        'fk_domains_id'
     ];
     public $timestamps = true;
 }
