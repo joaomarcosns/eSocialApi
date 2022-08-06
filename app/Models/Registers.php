@@ -12,7 +12,8 @@ class Registers extends Model
     protected $table = 'names_server';
     protected $id = 'id';
     protected $fillable = [
-        'names_server',
+        'name',
+        'fk_user_id'
     ];
     public $timestamps = false;
 }
