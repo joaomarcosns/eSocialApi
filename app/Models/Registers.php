@@ -9,11 +9,10 @@ class Registers extends Model
 {
     use HasFactory;
 
-    protected $table = 'names_server';
+    protected $table = 'registers';
     protected $id = 'id';
     protected $fillable = [
         'name',
-        'fk_user_id'
     ];
-    public $timestamps = false;
+    public $timestamps = true;
 }

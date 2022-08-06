@@ -16,9 +16,7 @@ class CreateRegistersTable extends Migration
         Schema::create('registers', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->unsignedBigInteger('fk_user_id');
             $table->timestamps();
-            $table->foreign('fk_user_id')->references('id')->on('domains');
         });
     }
 
