@@ -16,7 +16,8 @@ class Domains extends Model
         'tld',
         'created_at',
         'updated_at',
-        'expiration_date'
+        'expiration_date',
+        'fk_registers_id'
     ];
     public $timestamps = false;
 }
