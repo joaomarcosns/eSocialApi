@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\v1\AuthController;
 use App\Http\Controllers\api\v1\DomainsController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +22,13 @@ Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(f
     Route::post('/login', 'login')->name('login');
 });
 
-Route::controller(DomainsController::class)->name('domains.')->prefix('domains')->group(function () {
-    Route::get('/', 'index')->name('index');
-    Route::post('/upload', 'upload')->name('upload');
+Route::middleware('auth:api')->group(function () {
+    Route::controller(UserController::class)->name('user.')->prefix('user')->group(function () {
+        Route::get('/me', 'me')->name('me');
+    });
+
+    Route::controller(DomainsController::class)->name('domains.')->prefix('domains')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/upload', 'upload')->name('upload');
+    });
 });
