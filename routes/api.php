@@ -30,5 +30,6 @@ Route::middleware('auth:api')->group(function () {
     Route::controller(DomainsController::class)->name('domains.')->prefix('domains')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/upload', 'upload')->name('upload');
+        Route::get('/export', 'export')->name('export');
     });
 });

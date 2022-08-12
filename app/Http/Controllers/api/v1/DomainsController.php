@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api\v1;
 
+use App\Exports\DomainsExport;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ImportExcel;
@@ -136,4 +137,11 @@ class DomainsController extends Controller
 
 
     }
+
+    public function export() 
+    {
+        return Excel::download(new DomainsExport, 'domains.csv', \Maatwebsite\Excel\Excel::CSV);
+
+    }
+    
 }
