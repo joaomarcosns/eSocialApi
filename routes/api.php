@@ -31,5 +31,6 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/upload', 'upload')->name('upload');
         Route::get('/export', 'export')->name('export');
+        Route::get('/modelImport', 'modelImport')->name('modelImport');
     });
 });

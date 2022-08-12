@@ -10,6 +10,7 @@ use App\Models\Domains;
 use App\Models\NameServer;
 use App\Models\Registers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class DomainsController extends Controller
@@ -143,5 +144,9 @@ class DomainsController extends Controller
         return Excel::download(new DomainsExport, 'domains.csv', \Maatwebsite\Excel\Excel::CSV);
 
     }
-    
+
+    public function modelImport() {
+        $file = public_path('storage/logo/modelo.xlsx');
+        return response()->json($file);
+    }
 }
