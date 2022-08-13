@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Exports\DomainsExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DomainsUploadingRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ImportExcel;
 use App\Models\Domains;
@@ -79,7 +80,7 @@ class DomainsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function upload(Request  $request)
+    public function upload(DomainsUploadingRequest  $request)
     {
         $arrays = Excel::toArray(new ImportExcel, request()->file('file'));
         foreach ($arrays as $date) {
