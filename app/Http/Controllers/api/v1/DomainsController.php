@@ -105,6 +105,11 @@ class DomainsController extends Controller
                 $this->storeUpload($domain, $tld, $created, $updated, $responsible, $serveNames);
             }
         }
+        return response()->json([
+            'message' => "Dados do arquivos importados com sucesso",
+            'data' => '',
+            'status_code' => 201
+        ], 201);
     }
     /**
      * Store a newly created resource in storage.
