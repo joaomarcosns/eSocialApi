@@ -46,4 +46,27 @@ class DomainsTest extends TestCase
             'file' => 'O arquivo é obrigatório'
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function file_should_be_extension_incorrect()
+    {
+        Storage::fake('avatars');
+        Passport::actingAs(
+            $user  = User::factory()->createOne(),
+            ['create-servers']
+        );
+        $return =  $this->post(route('domains.upload'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'multipart/form-data',
+            'Authorization' => "Bearer {$user->createToken('Personal Access Token')->accessToken}",
+            'file' => 'avatars.jpg'
+        ]);
+
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'file' => 'O extensão deve incorreta, dev ser .xlsx'
+        ]);
+    }
 }
