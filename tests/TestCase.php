@@ -10,9 +10,8 @@ use Illuminate\Support\Facades\Artisan;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
     use RefreshDatabase;
-    // use DatabaseTransactions;
+    use CreatesApplication;
     
     public function setUp(): void
     {
