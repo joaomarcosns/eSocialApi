@@ -24,14 +24,15 @@ class DomainsUploadingRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => ['required']
+            'file' => ['required','mimes:xlsx']
         ];
     }
 
     public function messages()
     {
         return [
-            'file.required' => 'O arquivo é obrigatório'
+            'file.required' => 'O arquivo é obrigatório',
+            'file.mimes' => 'O extensão deve incorreta, dev ser .xlsx'
         ];
     }
 }
