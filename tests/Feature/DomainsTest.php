@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Domains;
+use App\Models\Registers;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -195,4 +197,45 @@ class DomainsTest extends TestCase
             'tld' => 'O tamanho máximo do tld do é de 15'
         ]);
     }
+    /**
+     * @test
+     */
+    public function domain_name_should_be_unique()
+    {
+        $registers = Registers::create([
+            "name" => "TEtse 0001",
+        ]);
+        
+        Domains::create([
+            "name" => "Testt0001",
+			"tld" => "test.test",
+			"created_at" => "2022-08-14",
+			"updated_at" => "2022-08-14",
+			"expiration_date" => "2023-08-14",
+			"fk_registers_id" => $registers->id,
+        ]);
+        Passport::actingAs(
+            $user  = User::factory()->createOne(),
+            ['create-servers']
+        );
+        $domain = $this->makeDomains();
+        $domain['name'] = 'Testt0001';
+        $return =  $this->post(route('domains.store'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => "Bearer {$user->createToken('Personal Access Token')->accessToken}",
+            "register" => $domain['register'],
+            "name" => $domain['name'],
+            "tld" => $domain['tld'],
+            "created_at" => $domain['created_at'],
+            "updated_at" => $domain['updated_at'],
+            "nameserver_1" => $domain['nameserver_1'], 
+            "nameserver_2" => $domain['nameserver_2']
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'name' => 'Nome do domínio já existe'
+        ]);
+    }
+
 }
