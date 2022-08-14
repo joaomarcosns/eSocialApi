@@ -293,4 +293,32 @@ class DomainsTest extends TestCase
             'register' => 'O tamanho máximo do nome do registrador é 255'
         ]);
     }
+    /**
+     * @test
+     */
+    public function domains_created_at_should_be_required()
+    {
+        Passport::actingAs(
+            $user  = User::factory()->createOne(),
+            ['create-servers']
+        );
+        $domain = $this->makeDomains();
+        $domain['created_at'] = '';
+        $return =  $this->post(route('domains.store'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => "Bearer {$user->createToken('Personal Access Token')->accessToken}",
+            "register" => $domain['register'],
+            "name" => $domain['name'],
+            "tld" => $domain['tld'],
+            "created_at" => $domain['created_at'],
+            "updated_at" => $domain['updated_at'],
+            "nameserver_1" => $domain['nameserver_1'], 
+            "nameserver_2" => $domain['nameserver_2']
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'created_at' => 'O campo é obrigatório'
+        ]);
+    }
 }
