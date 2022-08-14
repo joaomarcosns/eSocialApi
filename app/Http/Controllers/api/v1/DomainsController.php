@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Exports\DomainsExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DomainsStoreRequest;
 use App\Http\Requests\DomainsUploadingRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ImportExcel;
@@ -36,7 +37,7 @@ class DomainsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(DomainsStoreRequest $request)
     {
         $register = Registers::query()->where('name', trim($request->register))->get('id');
         if (empty($register)) {
