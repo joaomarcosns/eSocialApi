@@ -30,6 +30,7 @@ class DomainsStoreRequest extends FormRequest
             'created_at' => ['required'],
             'updated_at' => ['required'],
             'nameserver_1' => ['required'],
+            'nameserver_2' => ['required'],
         ];
     }
 
@@ -45,7 +46,8 @@ class DomainsStoreRequest extends FormRequest
             'register.max' => 'O tamanho máximo do nome do registrador é :max',
             'created_at.required' => 'O campo é obrigatório',
             'updated_at.required' => 'O campo é obrigatório',
-            'nameserver_1.required' =>'O campo é obrigatório'
+            'nameserver_1.required' =>'O campo é obrigatório',
+            'nameserver_2.required' =>'O campo é obrigatório',
         ];
     }
 }
