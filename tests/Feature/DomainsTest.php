@@ -11,6 +11,18 @@ use Laravel\Passport\Passport;
 
 class DomainsTest extends TestCase
 {
+    public function makeDomains()
+    {
+        return [
+            "register" => "Alexandre Faustino",
+            "name" => "Testt0001",
+            "tld" => "test.test",
+            "created_at" => "2022-08-14",
+            "updated_at" => "2022-08-14",
+            "nameserver_1" => "1888.teste.com", 
+            "nameserver_2" => "1889.teste.com"
+        ];
+    }
     /**
      * @test
      */
@@ -67,6 +79,35 @@ class DomainsTest extends TestCase
         $return->assertStatus(302);
         $return->assertSessionHasErrors([
             'file' => 'O extensão deve incorreta, dev ser .xlsx'
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function domain_name_should_be_required()
+    {
+        Passport::actingAs(
+            $user  = User::factory()->createOne(),
+            ['create-servers']
+        );
+        $domain = $this->makeDomains();
+        $domain['name'] = '';
+        $return =  $this->post(route('domains.store'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => "Bearer {$user->createToken('Personal Access Token')->accessToken}",
+            "register" => $domain['register'],
+            "name" => $domain['name'],
+            "tld" => $domain['tld'],
+            "created_at" => $domain['created_at'],
+            "updated_at" => $domain['updated_at'],
+            "nameserver_1" => $domain['nameserver_1'], 
+            "nameserver_2" => $domain['nameserver_2']
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'name' => 'O nome do domínio é obrigatório'
         ]);
     }
 }
