@@ -79,8 +79,8 @@ class DomainsController extends Controller
     {
         $data = Domains::with(['registers', 'names_servers'])->where('id', $id)->get();
         return response()->json([
-            'message' => empty($data) ? 'Não encontrado nos registros' :'Domínio encontrado nos registros',
-            'data' => empty($data) ? [] : $data, 
+            'message' => empty($data) ? 'Não encontrado nos registros' : 'Domínio encontrado nos registros',
+            'data' => empty($data) ? [] : $data,
             'status_code' => 201,
         ], 201);
     }
@@ -94,6 +94,24 @@ class DomainsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $register = Registers::query()->where('name', trim($request->register))->get();
+        if (empty($register[0])) {
+            $this->updateEmptyRegisters($request, $id);
+        }
+        $domais = Domains::query()->where('id', $id)->update([
+            "name" => $request->name,
+            "tld" => $request->tld,
+            "created_at" => $request->created_at,
+            "updated_at" => $request->updated_at,
+            'expiration_date' => new \DateTime("$request->updated_at + 365 days"),
+            'fk_registers_id' => $register[0]->id
+        ]);
+
+        return response()->json([
+            'message' => 'Sucesso ao criar um novo domínio',
+            'data' => Domains::with(['registers', 'names_servers'])->where('id', $domais)->get(),
+            'status_code' => 201,
+        ], 201);
     }
 
     /**
@@ -216,5 +234,27 @@ class DomainsController extends Controller
             'data' => Domains::with(['registers', 'names_servers'])->where('id', $domain->id)->get(),
             'status_code' => 201,
         ], 201);
+    }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    protected function updateEmptyRegisters(Request $request, $id)
+    {
+        $registers = Registers::query()->create([
+            'name' => $request->register,
+        ]);
+
+        Domains::query()->where('id', $id)->update([
+            "name" => $request->name,
+            "tld" => $request->tld,
+            "created_at" => $request->created_at,
+            "updated_at" => $request->updated_at,
+            'expiration_date' => new \DateTime("$request->updated_at + 365 days"),
+            'fk_registers_id' => $registers->id
+        ]);
     }
 }

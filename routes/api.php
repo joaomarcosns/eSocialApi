@@ -31,6 +31,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/store', 'store')->name('store');
         Route::get('/show/{id}', 'show')->name('show');
+        Route::put('/update/{id}', 'update')->name('update');
         Route::post('/upload', 'upload')->name('upload');
         Route::get('/export', 'export')->name('export');
         Route::get('/modelImport', 'modelImport')->name('modelImport');
