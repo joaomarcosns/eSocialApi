@@ -377,4 +377,32 @@ class DomainsTest extends TestCase
             'updated_at' => 'O campo é obrigatório'
         ]);
     }
+    /**
+     * @test
+     */
+    public function nameserver_nameserver_2_should_be_required()
+    {
+        Passport::actingAs(
+            $user  = User::factory()->createOne(),
+            ['create-servers']
+        );
+        $domain = $this->makeDomains();
+        $domain['nameserver_2'] = '';
+        $return =  $this->post(route('domains.store'), [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => "Bearer {$user->createToken('Personal Access Token')->accessToken}",
+            "register" => $domain['register'],
+            "name" => $domain['name'],
+            "tld" => $domain['tld'],
+            "created_at" => $domain['created_at'],
+            "updated_at" => $domain['updated_at'],
+            "nameserver_1" => $domain['nameserver_1'], 
+            "nameserver_2" => $domain['nameserver_2']
+        ]);
+        $return->assertStatus(302);
+        $return->assertSessionHasErrors([
+            'nameserver_2' => 'O campo é obrigatório'
+        ]);
+    }
 }
