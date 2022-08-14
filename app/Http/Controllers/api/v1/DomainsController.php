@@ -38,7 +38,34 @@ class DomainsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $register = Registers::query()->where('name', trim($request->register))->get('id');
+        if(empty($register)) {
+            $this->storeEmptyRegisters($request);
+        }
+
+        $domain = Domains::query()->create([
+            "name" => $request->name,
+            "tld" => $request->tld,
+            "created_at" => $request->created_at,
+            "updated_at" => $request->updated_at,
+            'expiration_date' => new \DateTime("$request->updated_at + 365 days"),
+            'fk_registers_id' => $register[0]->id
+        ]);
+
+        NameServer::query()->create([
+            'names_server'  => $request->nameserver_1,
+            'fk_domains_id' => $domain->id
+        ]);
+        
+        NameServer::query()->create([
+            'names_server'  => $request->nameserver_2,
+            'fk_domains_id' => $domain->id
+        ]);
+        return response()->json([
+            'message' => 'Sucesso ao criar um novo domínio',
+            'data' => Domains::with(['registers', 'names_servers'])->where('id', $domain->id)->get(),
+            'status_code' => 201,
+        ], 201);
     }
 
     /**
@@ -154,5 +181,9 @@ class DomainsController extends Controller
     public function modelImport() {
         $file = public_path('storage/logo/modelo.xlsx');
         return response()->json($file);
+    }
+
+    protected function storeEmptyRegisters(Request $request) {
+        echo 'aqui';
     }
 }
