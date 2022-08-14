@@ -39,7 +39,7 @@ class DomainsController extends Controller
     public function store(Request $request)
     {
         $register = Registers::query()->where('name', trim($request->register))->get('id');
-        if(empty($register)) {
+        if (empty($register)) {
             $this->storeEmptyRegisters($request);
         }
 
@@ -56,7 +56,7 @@ class DomainsController extends Controller
             'names_server'  => $request->nameserver_1,
             'fk_domains_id' => $domain->id
         ]);
-        
+
         NameServer::query()->create([
             'names_server'  => $request->nameserver_2,
             'fk_domains_id' => $domain->id
@@ -119,12 +119,12 @@ class DomainsController extends Controller
                 $updated = $value['last_update'];
                 $responsible = $value['responsible'];
 
-                if (empty($value['serve_names'])){
+                if (empty($value['serve_names'])) {
                     $serveNames = null;
-                }else{
+                } else {
                     $serveNames = $value['serve_names'];
                 }
-                
+
                 if (is_int($created) == 1) {
                     $created = new \DateTime("1899-12-30 + $created days");
                     $created = $created->format("Y-m-d");
@@ -153,7 +153,7 @@ class DomainsController extends Controller
         $registers = Registers::firstOrCreate([
             'name' => $responsible,
         ]);
-        
+
         $domains = Domains::firstOrCreate([
             'name' => $domain,
             'tld' => $tld,
@@ -162,28 +162,54 @@ class DomainsController extends Controller
             'expiration_date' => new \DateTime("$updated + 365 days"),
             'fk_registers_id' => $registers->id
         ]);
-        if (empty($serveNames)) $serveNames = $domain.'.'.$tld;
+        if (empty($serveNames)) $serveNames = $domain . '.' . $tld;
 
         NameServer::firstOrCreate([
             'names_server'  => $serveNames,
             'fk_domains_id' => $domains->id
         ]);
-
-
     }
 
-    public function export() 
+    public function export()
     {
         return Excel::download(new DomainsExport, 'domains.csv', \Maatwebsite\Excel\Excel::CSV);
-
     }
 
-    public function modelImport() {
+    public function modelImport()
+    {
         $file = public_path('storage/logo/modelo.xlsx');
         return response()->json($file);
     }
 
-    protected function storeEmptyRegisters(Request $request) {
-        echo 'aqui';
+    protected function storeEmptyRegisters(Request $request)
+    {
+
+        $registers = Registers::query()->create([
+            'name' => $request->register,
+        ]);
+
+        $domain = Domains::query()->create([
+            "name" => $request->name,
+            "tld" => $request->tld,
+            "created_at" => $request->created_at,
+            "updated_at" => $request->updated_at,
+            'expiration_date' => new \DateTime("$request->updated_at + 365 days"),
+            'fk_registers_id' => $registers->id
+        ]);
+
+        NameServer::query()->create([
+            'names_server'  => $request->nameserver_1,
+            'fk_domains_id' => $domain->id
+        ]);
+
+        NameServer::query()->create([
+            'names_server'  => $request->nameserver_2,
+            'fk_domains_id' => $domain->id
+        ]);
+        return response()->json([
+            'message' => 'Sucesso ao criar um novo domínio',
+            'data' => Domains::with(['registers', 'names_servers'])->where('id', $domain->id)->get(),
+            'status_code' => 201,
+        ], 201);
     }
 }
