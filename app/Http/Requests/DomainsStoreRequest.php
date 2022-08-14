@@ -26,6 +26,7 @@ class DomainsStoreRequest extends FormRequest
         return [
             'name' => ['required', 'max:255', 'unique:domains'],
             'tld' => ['required', 'max:15'],
+            'register' => ['required']
         ];
     }
 
@@ -37,6 +38,7 @@ class DomainsStoreRequest extends FormRequest
             'name.unique' => 'Nome do domínio já existe',
             'tld.required' => 'O tld do domínio é obrigatório',
             'tld.max' => 'O tamanho máximo do tld do é de :max',
+            'register.required' => 'O nome do registrador é obrigatório',
         ];
     }
 }
