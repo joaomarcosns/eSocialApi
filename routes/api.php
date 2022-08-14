@@ -22,16 +22,16 @@ Route::controller(AuthController::class)->name('auth.')->prefix('auth')->group(f
     Route::post('/login', 'login')->name('login');
 });
 
-// Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:api')->group(function () {
     Route::controller(UserController::class)->name('user.')->prefix('user')->group(function () {
         Route::get('/me', 'me')->name('me');
     });
 
     Route::controller(DomainsController::class)->name('domains.')->prefix('domains')->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/store', 'store')->name('store');
+        Route::post('/store', 'store')->name('store');
         Route::post('/upload', 'upload')->name('upload');
         Route::get('/export', 'export')->name('export');
         Route::get('/modelImport', 'modelImport')->name('modelImport');
     });
-// });
+});
