@@ -77,7 +77,12 @@ class DomainsController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = Domains::with(['registers', 'names_servers'])->where('id', $id)->get();
+        return response()->json([
+            'message' => empty($data) ? 'Não encontrado nos registros' :'Domínio encontrado nos registros',
+            'data' => empty($data) ? [] : $data, 
+            'status_code' => 201,
+        ], 201);
     }
 
     /**
@@ -89,7 +94,6 @@ class DomainsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
