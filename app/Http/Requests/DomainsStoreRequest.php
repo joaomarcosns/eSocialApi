@@ -24,7 +24,7 @@ class DomainsStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required'],
+            'name' => ['required', 'max:255'],
             'tld' => ['required'],
         ];
     }
@@ -33,6 +33,7 @@ class DomainsStoreRequest extends FormRequest
     {
         return [
             'name.required' => 'O nome do domínio é obrigatório',
+            'name.max' => 'O tamanho máximo do nome do é de :max',
             'tld.required' => 'O tld do domínio é obrigatório',
         ];
     }
