@@ -39,11 +39,10 @@ class DomainsController extends Controller
      */
     public function store(DomainsStoreRequest $request)
     {
-        $register = Registers::query()->where('name', trim($request->register))->get('id');
-        if (empty($register)) {
-            $this->storeEmptyRegisters($request);
+        $register = Registers::query()->where('name', trim($request->register))->get();
+        if (empty($register->toArray())) {
+            return $this->storeEmptyRegisters($request);
         }
-
         $domain = Domains::query()->create([
             "name" => $request->name,
             "tld" => $request->tld,
@@ -206,7 +205,6 @@ class DomainsController extends Controller
 
     protected function storeEmptyRegisters(Request $request)
     {
-
         $registers = Registers::query()->create([
             'name' => $request->register,
         ]);
