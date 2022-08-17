@@ -1,64 +1,83 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<p align="center"><a href="#" target="_blank"></a>AGROCALLIDOS</p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+## Descrição
+
+<p>Aqui sera listado os requisitos necessários, o gia de instalação do programa, e fluxo de atividade.</p>
+
+## Lista de requisitos
+Logo abaixo será listado os requisitos necessários para instalação do programa.
+
+- [PHP ^8 ou ^7.3](https://www.apachefriends.org/pt_br/download_success.html).
+- [Mysql](https://www.apachefriends.org/pt_br/download_success.html).
+- [Home Assistant](https://www.home-assistant.io/).
+
+## Guia de instalação
+- [Instalação Home Assistant](https://www.home-assistant.io/installation/).
+- [Instalação do Mysql no Home Assistant](https://www.home-assistant.io/integrations/recorder/).
+- Clone o repositorio do projeto no diretorio raiz do projeto.
+``` bash    
+    git clone https://github.com/joaomarcosns/eSocialApi.git
+```
+- Baixa todos as dependências do projeto.
+``` bash    
+    composer install 
+```
+- Criar .env.
+``` bash    
+    cp .env-example .env 
+```
+- Altere os valores de conexão com o banco de dados do arquivo `.env`
+### OBS: Todos os valores devem ser inseridos de acorco com o que foi colocado no <a href="https://www.home-assistant.io/integrations/recorder/" target="_blank">Home Assistant</a>.
+```env
+  DB_CONNECTION=mysql
+  DB_HOST=host
+  DB_PORT=3306
+  DB_DATABASE=dbname
+  DB_USERNAME=dbuser
+  DB_PASSWORD=dbpass
+```
+### OBS: conando abaixo, recomendavel no terminal git bash
+- Adiciona todas as permissões na pasta storage.
+``` bash    
+    $ chmod -R 777 storage
+```
+- Gera a chave da aplicação.
+``` bash    
+    $ php artisan key:generate
+```
+- Cria um link simbólico entre as pastas /public/storage -> /storage/app/public.
+``` bash    
+    $ php artisan key:generate
+```
+- Agora execute as migrations.
+``` bash    
+    $ php artisan migrate
+```
+- Criar clientes do Laravel Passport <a href="https://laravel.com/docs/8.x/passport" target="_blank">(Saiba mais)</a>.
+``` bash    
+    $ php artisan passport:install
+```
+
+### Detro do arquivo .env possui o seguinte conteudo:
+
+``` env 
+    PASSPORT_PERSONAL_ACCESS_CLIENT_ID= "CLIENT_ID"
+    PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET= "CLIENT_SECRET"
+```
+
+- Subistitua os valores de acordo os <b>"CLIENT_ID"</b> e <b>"CLIENT_SECRET"</b>. pelos valores que você recebeu ao rodar o comando <b>php artisan passport:install</b>.
+
+### Front 
+<p>Essa api, foi consumida pelo 
+<a href="https://github.com/joaomarcosns/esocialfront.git">front desenvolvido em Vue 3</a>
 </p>
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Licença
+- [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/).
