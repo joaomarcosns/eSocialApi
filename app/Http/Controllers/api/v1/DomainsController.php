@@ -147,18 +147,14 @@ class DomainsController extends Controller
                 $created = $value['registration_date'];
                 $updated = $value['last_update'];
                 $responsible = $value['responsible'];
-
-                if (empty($value['serve_names'])) {
-                    $serveNames = null;
-                } else {
-                    $serveNames = $value['serve_names'];
-                }
+                $serveName1 = $value['serve_names_1'];
+                $serveName2 = $value['serve_names_2'];
 
                 if (is_int($created) == 1) {
                     $created = new \DateTime("1899-12-30 + $created days");
                     $created = $created->format("Y-m-d");
                 }
-                $this->storeUpload($domain, $tld, $created, $updated, $responsible, $serveNames);
+                $this->storeUpload($domain, $tld, $created, $updated, $responsible, $serveName1, $serveName2);
             }
         }
         return response()->json([
@@ -175,9 +171,10 @@ class DomainsController extends Controller
      * @param  Date $created
      * @param  Date $updated
      * @param  String $responsible
-     * @param  String $serveNames
+     * @param  String $serveName1
+     * @param  String $serveName2
      */
-    protected function storeUpload($domain, $tld, $created, $updated, $responsible, $serveNames)
+    protected function storeUpload($domain, $tld, $created, $updated, $responsible, $serveName1, $serveName2)
     {
         $registers = Registers::firstOrCreate([
             'name' => $responsible,
@@ -191,10 +188,16 @@ class DomainsController extends Controller
             'expiration_date' => new \DateTime("$updated + 365 days"),
             'fk_registers_id' => $registers->id
         ]);
-        if (empty($serveNames)) $serveNames = $domain . '.' . $tld;
+        if (empty($serveName1)) $serveName1 = $domain . '.' . $tld;
+        if (empty($serveName2)) $serveName2 = $domain . '.' . $tld;
 
         NameServer::firstOrCreate([
-            'names_server'  => $serveNames,
+            'names_server'  => $serveName1,
+            'fk_domains_id' => $domains->id
+        ]);
+
+        NameServer::firstOrCreate([
+            'names_server'  => $serveName2,
             'fk_domains_id' => $domains->id
         ]);
     }
