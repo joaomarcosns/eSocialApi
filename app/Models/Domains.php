@@ -17,7 +17,8 @@ class Domains extends Model
         'created_at',
         'updated_at',
         'expiration_date',
-        'fk_registers_id'
+        'fk_registers_id',
+        'status'
     ];
     public $timestamps = false;
 

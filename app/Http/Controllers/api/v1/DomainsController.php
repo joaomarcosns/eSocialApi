@@ -26,7 +26,7 @@ class DomainsController extends Controller
     {
         return response()->json([
             'message' => "listagem dos domínios",
-            'data' => Domains::with(['registers', 'names_servers'])->get(),
+            'data' => Domains::with(['registers', 'names_servers'])->where('status', '!=', 'false')->get(),
             'status_code' => 200
         ], 200);
     }
