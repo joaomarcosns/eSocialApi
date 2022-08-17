@@ -226,8 +226,8 @@ class DomainsController extends Controller
 
     public function modelImport()
     {
-        $file = public_path('storage/logo/modelo.xlsx');
-        return response()->json($file);
+        $file = public_path('\modelo_importacao\modelo.xlsx');
+        return response()->file($file);
     }
 
     protected function storeEmptyRegisters(Request $request)
