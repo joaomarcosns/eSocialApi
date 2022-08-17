@@ -141,20 +141,31 @@ class DomainsController extends Controller
         $arrays = Excel::toArray(new ImportExcel, request()->file('file'));
         foreach ($arrays as $date) {
             foreach ($date as $key => $value) {
-                $domainExplode =  explode('.', $value['domain'], 2);
-                $domain  = $domainExplode[0];
-                $tld = $domainExplode[1];
-                $created = $value['registration_date'];
-                $updated = $value['last_update'];
-                $responsible = $value['responsible'];
-                $serveName1 = $value['serve_names_1'];
-                $serveName2 = $value['serve_names_2'];
+                $domain = $value['domain'];
+                $domainExplode =  explode('.', $domain, 2);
+                if (!empty($domainExplode[1])) {
+                    $domain  = $domainExplode[0];
+                    $tld = $domainExplode[1];
+                    $created = $value['registration_date'];
+                    $updated = $value['last_update'];
 
-                if (is_int($created) == 1) {
-                    $created = new \DateTime("1899-12-30 + $created days");
-                    $created = $created->format("Y-m-d");
+                    $responsible = $value['responsible'];
+                    $serveName1 = $value['serve_names_1'];
+                    $serveName2 = $value['serve_names_2'];
+
+                    if (is_int($created) == 1) {
+                        $created = new \DateTime("1899-12-30 + $created days");
+                        $created = $created->format("Y-m-d");
+                    }
+                    if (is_int($updated) == 1) {
+                        $updated = new \DateTime("1899-12-30 + $updated days");
+                        $updated = $updated->format("Y-m-d");
+                    }
+
+                    $this->storeUpload($domain, $tld, $created, $updated, $responsible, $serveName1, $serveName2);
+                } else {
+                    break;
                 }
-                $this->storeUpload($domain, $tld, $created, $updated, $responsible, $serveName1, $serveName2);
             }
         }
         return response()->json([
@@ -188,18 +199,24 @@ class DomainsController extends Controller
             'expiration_date' => new \DateTime("$updated + 365 days"),
             'fk_registers_id' => $registers->id
         ]);
-        if (empty($serveName1)) $serveName1 = $domain . '.' . $tld;
-        if (empty($serveName2)) $serveName2 = $domain . '.' . $tld;
 
-        NameServer::firstOrCreate([
-            'names_server'  => $serveName1,
-            'fk_domains_id' => $domains->id
-        ]);
+        if (empty($serveName1) && empty($serveName2)) {
+            $serveName1 = $domain . '.' . $tld;
+            NameServer::firstOrCreate([
+                'names_server'  => $serveName1,
+                'fk_domains_id' => $domains->id
+            ]);
+        } else {
+            NameServer::firstOrCreate([
+                'names_server'  => $serveName1,
+                'fk_domains_id' => $domains->id
+            ]);
 
-        NameServer::firstOrCreate([
-            'names_server'  => $serveName2,
-            'fk_domains_id' => $domains->id
-        ]);
+            NameServer::firstOrCreate([
+                'names_server'  => $serveName2,
+                'fk_domains_id' => $domains->id
+            ]);
+        }
     }
 
     public function export()
