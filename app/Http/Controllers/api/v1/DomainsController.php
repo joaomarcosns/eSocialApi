@@ -94,10 +94,12 @@ class DomainsController extends Controller
     public function update(Request $request, $id)
     {
         $register = Registers::query()->where('name', trim($request->register))->get();
-        if (empty($register[0])) {
-            $this->updateEmptyRegisters($request, $id);
+        $serveNames = NameServer::query()->where('fk_domains_id', $id)->get();
+        // dd($serveNames->toArray()[0]);
+        if (empty($register->toArray())) {
+            return $this->updateEmptyRegisters($request, $id, $serveNames);
         }
-        $domais = Domains::query()->where('id', $id)->update([
+        Domains::query()->where('id', $id)->update([
             "name" => $request->name,
             "tld" => $request->tld,
             "created_at" => $request->created_at,
@@ -105,10 +107,15 @@ class DomainsController extends Controller
             'expiration_date' => new \DateTime("$request->updated_at + 365 days"),
             'fk_registers_id' => $register[0]->id
         ]);
-
+        $serveNames[0]->update([
+            'names_server'  => $request->nameserver_1,
+        ]);
+        $serveNames[1]->update([
+            'names_server'  => $request->nameserver_2,
+        ]);
         return response()->json([
-            'message' => 'Sucesso ao criar um novo domínio',
-            'data' => Domains::with(['registers', 'names_servers'])->where('id', $domais)->get(),
+            'message' => 'Sucesso ao atualizar um novo domínio',
+            'data' => Domains::with(['registers', 'names_servers'])->where('id', $id)->get(),
             'status_code' => 201,
         ], 201);
     }
@@ -240,7 +247,7 @@ class DomainsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    protected function updateEmptyRegisters(Request $request, $id)
+    protected function updateEmptyRegisters(Request $request, $id, $serveNames)
     {
         $registers = Registers::query()->create([
             'name' => $request->register,
@@ -253,6 +260,13 @@ class DomainsController extends Controller
             "updated_at" => $request->updated_at,
             'expiration_date' => new \DateTime("$request->updated_at + 365 days"),
             'fk_registers_id' => $registers->id
+        ]);
+
+        $serveNames[0]->update([
+            'names_server'  => $request->nameserver_1,
+        ]);
+        $serveNames[1]->update([
+            'names_server'  => $request->nameserver_2,
         ]);
     }
 }
