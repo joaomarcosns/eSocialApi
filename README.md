@@ -12,8 +12,6 @@ Logo abaixo será listado os requisitos necessários para instalação do progra
 - [Home Assistant](https://www.home-assistant.io/).
 
 ## Guia de instalação
-- [Instalação Home Assistant](https://www.home-assistant.io/installation/).
-- [Instalação do Mysql no Home Assistant](https://www.home-assistant.io/integrations/recorder/).
 - Clone o repositorio do projeto no diretorio raiz do projeto.
 ``` bash    
     git clone https://github.com/joaomarcosns/eSocialApi.git
@@ -66,18 +64,14 @@ Logo abaixo será listado os requisitos necessários para instalação do progra
 ```
 
 - Subistitua os valores de acordo os <b>"CLIENT_ID"</b> e <b>"CLIENT_SECRET"</b>. pelos valores que você recebeu ao rodar o comando <b>php artisan passport:install</b>.
-
+Por fim, rode os comando 
+``` bash 
+    php artisan serve
+```
 ### Front 
 <p>Essa api, foi consumida pelo 
 <a href="https://github.com/joaomarcosns/esocialfront.git">front desenvolvido em Vue 3</a>
 </p>
-
-
-
-
-
-
-
 
 ## Licença
 - [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/).
