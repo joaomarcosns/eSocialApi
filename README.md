@@ -2,7 +2,7 @@
 
 ## Descrição
 
-<p>Aqui sera listado os requisitos necessários, o gia de instalação do programa, e fluxo de atividade.</p>
+<p>Aqui sera listado os requisitos necessários, o gia de instalação do programa.</p>
 
 ## Lista de requisitos
 Logo abaixo será listado os requisitos necessários para instalação do programa.
