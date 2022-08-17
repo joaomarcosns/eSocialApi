@@ -116,8 +116,8 @@ class DomainsController extends Controller
         return response()->json([
             'message' => 'Sucesso ao atualizar um novo domínio',
             'data' => Domains::with(['registers', 'names_servers'])->where('id', $id)->get(),
-            'status_code' => 201,
-        ], 201);
+            'status_code' => 200,
+        ], 200);
     }
 
     /**
@@ -128,7 +128,22 @@ class DomainsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            Domains::query()->where('id', $id)->update([
+                "status" => false,
+            ]);
+            return response()->json([
+                'message' => 'Sucesso ao deletar um novo domínio',
+                'data' => '',
+                'status_code' => 200,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error',
+                'data' => $e->getMessage(),
+                'status_code' => 500,
+            ], 200);
+        }
     }
     /**
      * Store a newly created resource in storage.
