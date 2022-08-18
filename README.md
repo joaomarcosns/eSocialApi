@@ -8,8 +8,8 @@
 Logo abaixo será listado os requisitos necessários para instalação do programa.
 
 - [PHP ^8 ou ^7.3](https://www.apachefriends.org/pt_br/download_success.html).
-- [Mysql](https://www.apachefriends.org/pt_br/download_success.html).
-- [Home Assistant](https://www.home-assistant.io/).
+- [XAMPP](https://www.apachefriends.org/pt_br/index.html).
+- [Composer](https://getcomposer.org/)
 
 ## Guia de instalação
 - Clone o repositorio do projeto no diretorio raiz do projeto.
@@ -25,7 +25,6 @@ Logo abaixo será listado os requisitos necessários para instalação do progra
     cp .env-example .env 
 ```
 - Altere os valores de conexão com o banco de dados do arquivo `.env`
-### OBS: Todos os valores devem ser inseridos de acorco com o que foi colocado no <a href="https://www.home-assistant.io/integrations/recorder/" target="_blank">Home Assistant</a>.
 ```env
   DB_CONNECTION=mysql
   DB_HOST=host
